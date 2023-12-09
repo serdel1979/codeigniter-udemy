@@ -45,3 +45,4 @@ application/logs/*
 # Visual Studio Code
 .vscode/
 /writable
+/system
