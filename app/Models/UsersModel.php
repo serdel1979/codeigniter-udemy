@@ -12,7 +12,7 @@ class UsersModel extends Model{
 
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['id','name','username','password','rol','last','deleted'];
+    protected $allowedFields = ['id','name','username','password','rol','last','deleted_at'];
 
 
 
