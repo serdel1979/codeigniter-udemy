@@ -8,28 +8,13 @@ use App\Models\CategoriesModel;
 
 class Dashboard extends BaseController
 {
-    // public function index(): string
-    // {
-    //     $data['current_url'] = current_url();
-
-    //     $model = new UsersModel();
-
-    //     //    protected $allowedFields = ['id','name','username','password','rol','last','deleted'];
-    //     // $id = $model->insert([
-    //     //     'name'=>'Loreno',
-    //     //     'username'=>'lola',
-    //     //     'password'=>'lolalola',
-    //     //     'rol'=>'1',
-    //     //     'last'=>'9-12-2023'
-    //     // ]);
-
-    //     return view('dashboard', $data);
-    // }
+    public function index()
+    {
+        $this->loadView("index");
+    }
 
 
-    public function index(){
-      //  $this->loadView("index");
-
+    public function uploadpost(){
         $categoriesModel = new CategoriesModel();
 
         $data['categories'] = $categoriesModel->getCategories();
@@ -57,13 +42,17 @@ class Dashboard extends BaseController
             ]
         ]);
         if($_POST){
-            $file= $this->request->getFile("banner");
-            $filename = $file->getRandomName();
             if(!$validation->withRequest($this->request)->run()){
                 $errors = $validation->getErrors();
-                print_r($errors);
+                $data['error']=true;
             }else{
-                echo "SENT!!!";
+                $file= $this->request->getFile("banner");
+                $filename = $file->getRandomName();
+                if($file->isValid()){
+                    $file->move(WRITEPATH."uploads",$filename);
+                }else{
+                    echo "no válido";
+                }
                 $post = [
                     'banner' => $filename,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -72,27 +61,29 @@ class Dashboard extends BaseController
                     'content' => $_POST['content'],
                     'category' => $_POST['category'],
                     'tags' => $_POST['tags'],
-                    'slug' => $_POST['slug'],
+                    'slug' => url_title($_POST['slug'])
                 ];
                 $postModel = new PostsModel();
                 $postModel->addPost($post);
+                return redirect()->to(base_url('/'));
             }
 
-            if($file->isValid()){
-                $file->move(WRITEPATH."uploads",$filename);
-            }else{
-                echo "no válido";
-            }
 
         }
 
-        echo view("uploadPost",$data);
+        $this->loadView("uploadPost",$data);
     }
 
-    public function loadView($view=null){
-        echo view('includes/header');
-        echo view($view);
-        echo view('includes/footer');
+    public function loadView($view=null, $data=null){       
+        if($data){
+            echo view('includes/header');
+            echo view($view,$data);
+            echo view('includes/footer');
+        }else{
+            echo view('includes/header');
+            echo view($view);
+            echo view('includes/footer');
+        }
     }
 
 }

@@ -21,12 +21,14 @@
 
     <!-- script
     ================================================== -->
+
     <script src="<?= base_url() ?>assets/js/modernizr.js"></script>
 
     <!-- favicons
     ================================================== -->
     <link rel="shortcut icon" href="<?= base_url() ?>assets/images/favicon.ico" type="image/x-icon">
     <link rel="icon" href="<?= base_url() ?>assets/images/favicon.ico" type="image/x-icon">
+
 
 </head>
 
